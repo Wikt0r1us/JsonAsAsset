@@ -37,7 +37,8 @@ public class JsonAsAsset : ModuleRules {
 			"MovieScene",
 			
 #if UE_5_0_OR_LATER
-			"ContentBrowserData"
+			"ContentBrowserData",
+			"PluginUtils"
 #endif
 		});
 
