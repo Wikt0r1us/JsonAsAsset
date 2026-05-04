@@ -8,7 +8,8 @@
 
 /* Settings for animation blueprints */
 USTRUCT()
-struct FJAnimationBlueprintSettings {
+struct FJAnimationBlueprintSettings
+{
 	GENERATED_BODY()
 public:
 	/* Saves IDs in Node's comment. */

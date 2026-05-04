@@ -14,7 +14,6 @@
 #include "JsonAsAssetSettings.generated.h"
 
 extern FName GJsonAsAssetSettingsCategoryName;
-extern FName GJsonAsAssetInternalName;
 
 USTRUCT()
 struct FJSettings
@@ -22,7 +21,8 @@ struct FJSettings
 	GENERATED_BODY()
 public:
 	/* Constructor to initialize default values */
-	FJSettings() {
+	FJSettings()
+	{
 		Material = FJMaterialSettings();
 		Texture = FJTextureSettings();
 		AnimationBlueprint = FJAnimationBlueprintSettings();

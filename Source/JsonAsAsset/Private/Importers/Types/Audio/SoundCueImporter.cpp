@@ -2,7 +2,6 @@
 
 #include "Importers/Types/Audio/SoundCueImporter.h"
 #include "Sound/SoundCue.h"
-#include "Utilities/JsonUtilities.h"
 
 UObject* ISoundCueImporter::CreateAsset(UObject* CreatedAsset) {
 	return IImporter::CreateAsset(NewObject<USoundCue>(GetPackage(), *GetAssetName(), RF_Public | RF_Standalone));

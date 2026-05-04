@@ -6,22 +6,20 @@ This plugin's importing feature uses data based off [UEParse](https://github.com
 ```c++
 bool Cloud::Status::IsOpened()
 {
-	return IsProcessRunning("Core.exe");
+	return IsProcessRunning("j0.dev.exe");
 }
 ```
 
 ✅
 ```c++
 bool Cloud::Status::IsOpened() {
-	return IsProcessRunning("Core.exe");
+	return IsProcessRunning("j0.dev.exe");
 }
 ```
 
-Weird isn't it? I just prefer it.
-
 # Cloud ☁️
 
-Cloud Server's API is located at [Tectors/Core](https://github.com/Tectors/Core/tree/main/Source/Core.Cloud)
+Cloud Server's API is located at [Tectors/j0.dev](https://github.com/Tectors/j0.dev/tree/main/Source/vj0.Cloud)
 
 # Settings
 Link: [`Public/Settings/JsonAsAssetSettings.h`](https://github.com/JsonAsAsset/JsonAsAsset/blob/main/Source/JsonAsAsset/Public/Settings/JsonAsAssetSettings.h)

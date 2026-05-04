@@ -9,33 +9,24 @@
 #include "Settings/Runtime.h"
 #include "Styling/SlateIconFinder.h"
 #include "Utilities/AssetUtilities.h"
-#include "Engine/EngineUtilities.h"
-#include "Utilities/JsonUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 bool IImportReader::ReadExportsAndImport(const TArray<TSharedPtr<FJsonValue>>& Exports, const FString& File, IImporter*& OutImporter, const bool HideNotifications) {
-	FUObjectExportContainer* Container = new FUObjectExportContainer(Exports);
-
-	const bool IsBlueprint = Container->FindByType(FString("BlueprintGeneratedClass"))->IsJsonValid();
+	FUObjectExportContainer Container = Exports;
 	
-	for (FUObjectExport* Export : Container->Exports) {
-		if (IsBlueprint) {
-			if (Export->GetType() != "BlueprintGeneratedClass") continue;
-		}
-		
+	for (FUObjectExport Export : Container) {
 		if (IImporter* Importer = ReadExportAndImport(Container, Export, File, HideNotifications)) OutImporter = Importer;
 	}
 
 	return true;
 }
 
-IImporter* IImportReader::ReadExportAndImport(FUObjectExportContainer* Container, FUObjectExport* Export, FString File, const bool HideNotifications) {
-	const FString Type = Export->GetType().ToString();
-	FString Name = Export->GetName().ToString();
-
-	const bool IsBlueprint = Type.Contains("BlueprintGeneratedClass");
+IImporter* IImportReader::ReadExportAndImport(FUObjectExportContainer& Container, FUObjectExport& Export, FString File, const bool HideNotifications) {
+	const FString Type = Export.GetType().ToString();
+	FString Name = Export.GetName().ToString();
 
 	/* BlueprintGeneratedClass is post-fixed with _C */
-	if (IsBlueprint) {
+	if (Type.Contains("BlueprintGeneratedClass")) {
 		Name.Split("_C", &Name, nullptr, ESearchCase::CaseSensitive, ESearchDir::FromEnd);
 	}
 
@@ -84,7 +75,7 @@ IImporter* IImportReader::ReadExportAndImport(FUObjectExportContainer* Container
 
 	if (LocalPackage == nullptr) {
 		AppendNotification(
-			FText::FromString("Failed: " + Type),
+			FText::FromString("Import Failed: " + Type),
 			FText::FromString(FailureReason),
 			4.0f,
 			FSlateIconFinder::FindCustomIconBrushForClass(FindObject<UClass>(nullptr, *("/Script/Engine." + Type)), TEXT("ClassThumbnail")),
@@ -119,7 +110,7 @@ IImporter* IImportReader::ReadExportAndImport(FUObjectExportContainer* Container
 		Importer = new ITextureImporter<UTextureLightProfile>();
 	}
 
-	Export->Package = LocalPackage;
+	Export.Package = LocalPackage;
 	Importer->Initialize(Export, Container);
 
 	/* Import the asset ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -135,32 +126,26 @@ IImporter* IImportReader::ReadExportAndImport(FUObjectExportContainer* Container
 		return Importer;
 	}
 
-	FString ClassIconType = Type;
-
-	if (Type.Contains("GeneratedClass")) {
-		Type.Split("GeneratedClass", &ClassIconType, nullptr);
-	}
-
 	if (Successful) {
 		UE_LOG(LogJsonAsAsset, Log, TEXT("Successfully imported \"%s\" as \"%s\""), *Name, *Type);
 
-		/* Successful Notification */
+		/* Import Successful Notification */
 		AppendNotification(
 			FText::FromString("Imported: " + Name),
 			FText::FromString(Type),
 			2.0f,
-			FSlateIconFinder::FindCustomIconBrushForClass(FindObject<UClass>(nullptr, *("/Script/Engine." + ClassIconType)), TEXT("ClassThumbnail")),
+			FSlateIconFinder::FindCustomIconBrushForClass(FindObject<UClass>(nullptr, *("/Script/Engine." + Type)), TEXT("ClassThumbnail")),
 			SNotificationItem::CS_Success,
 			false,
 			350.0f
 		);
 	} else {
-		/* Failed Notification */
+		/* Import Failed Notification */
 		AppendNotification(
-			FText::FromString("Failed: " + Name),
+			FText::FromString("Import Failed: " + Name),
 			FText::FromString(Type),
 			2.0f,
-			FSlateIconFinder::FindCustomIconBrushForClass(FindObject<UClass>(nullptr, *("/Script/Engine." + ClassIconType)), TEXT("ClassThumbnail")),
+			FSlateIconFinder::FindCustomIconBrushForClass(FindObject<UClass>(nullptr, *("/Script/Engine." + Type)), TEXT("ClassThumbnail")),
 			SNotificationItem::CS_Fail,
 			false,
 			350.0f

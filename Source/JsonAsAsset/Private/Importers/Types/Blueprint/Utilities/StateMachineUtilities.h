@@ -14,7 +14,8 @@
 #include "AnimStateTransitionNode.h"
 #include "EdGraphUtilities.h"
 #include "Animation/AnimNode_TransitionResult.h"
-#include "Serializers/ObjectSerializer.h"
+#include "Utilities/Serializers/ObjectUtilities.h"
+#include "Utilities/Serializers/PropertyUtilities.h"
 
 inline void AutoLayoutStateMachineGraph(UAnimationStateMachineGraph* StateMachineGraph)  {
     if (!StateMachineGraph) { 
@@ -136,7 +137,7 @@ inline void CreateStateMachineGraph(
 	UAnimationStateMachineGraph* StateMachineGraph,
 	const TSharedPtr<FJsonObject>& StateMachineJsonObject,
 	UObjectSerializer* ObjectSerializer,
-	FUObjectExportContainer* RootContainer,
+	FUObjectExportContainer RootContainer,
 	TArray<FString> ReversedNodesKeys,
 	IImporter* Importer,
 	UAnimBlueprint* AnimBlueprint
@@ -184,6 +185,7 @@ inline void CreateStateMachineGraph(
 
 			if (EntryRuleNodeIndex != -1) {
 				FString DelegateExportName = ReversedNodesKeys[EntryRuleNodeIndex];
+				const FUObjectExport DelegateExport = RootContainer.Find(DelegateExportName);
 
 				UAnimationTransitionGraph* TransGraph = CastChecked<UAnimationTransitionGraph>(BoundGraph);
 				UAnimGraphNode_TransitionResult* ResultNode = TransGraph->GetResultNode();
@@ -212,7 +214,7 @@ inline void CreateStateMachineGraph(
 		FEdGraphUtilities::RenameGraphToNameOrCloseToName(BoundGraph, *StateName);
 
 		Container.Exports.Add(
-			new FUObjectExport(
+			FUObjectExport(
 				FName(*StateName),
 				NAME_None,
 				NAME_None,
@@ -233,14 +235,14 @@ inline void CreateStateMachineGraph(
 	    const int32 PreviousStateIndex = TransitionObject->GetIntegerField(TEXT("PreviousState"));
 	    const int32 NextStateIndex = TransitionObject->GetIntegerField(TEXT("NextState"));
 
-		FUObjectExport* PreviousStateExport = Container.Exports[PreviousStateIndex];
-		FUObjectExport* NextStateExport = Container.Exports[NextStateIndex];
-		if (!PreviousStateExport->Object || !NextStateExport->Object) continue;
+		const FUObjectExport PreviousStateExport = Container.Exports[PreviousStateIndex];
+		const FUObjectExport NextStateExport = Container.Exports[NextStateIndex];
+		if (!PreviousStateExport.Object || !NextStateExport.Object) continue;
 
-		TSharedPtr<FJsonObject> PreviousStateObject = PreviousStateExport->JsonObject;
+		TSharedPtr<FJsonObject> PreviousStateObject = PreviousStateExport.JsonObject;
 		
-		UAnimStateNodeBase* const FromNode = Cast<UAnimStateNodeBase>(PreviousStateExport->Object);
-		UAnimStateNodeBase* const ToNode = Cast<UAnimStateNodeBase>(NextStateExport->Object);
+		UAnimStateNodeBase* const FromNode = Cast<UAnimStateNodeBase>(PreviousStateExport.Object);
+		UAnimStateNodeBase* const ToNode = Cast<UAnimStateNodeBase>(NextStateExport.Object);
 
 		/* State Nodes must exist */
 		if (!FromNode || !ToNode) continue;
@@ -300,9 +302,9 @@ inline void CreateStateMachineGraph(
 			FString DelegateExportName = ReversedNodesKeys[CanTakeDelegateIndex];
 			
 			/* Use if needed */
-			FUObjectExport* DelegateExport = RootContainer->Find(DelegateExportName);
+			const FUObjectExport DelegateExport = RootContainer.Find(DelegateExportName);
 
-			HandlePropertyBinding(DelegateExport, Importer->GetContainer()->JsonObjects, TransitionResult, Importer, AnimBlueprint);
+			HandlePropertyBinding(DelegateExport, Importer->AssetContainer.JsonObjects, TransitionResult, Importer, AnimBlueprint);
 
 			TransitionResult->NodeComment = DelegateExportName;
 			TransitionResult->bCommentBubbleVisible = true;
@@ -332,7 +334,7 @@ inline void CreateStateMachineGraph(
 	const FString InitialStateName = InitialStateObject->GetStringField(TEXT("StateName"));
 
 	/* Find Initial State using the StateNodesMap */
-	UAnimStateNodeBase* InitialStateNode = Cast<UAnimStateNodeBase>(Container.Find(InitialStateName)->Object);
+	UAnimStateNodeBase* InitialStateNode = Cast<UAnimStateNodeBase>(Container.Find(InitialStateName).Object);
 	if (!InitialStateNode) return;
 
 	/* Find the EntryNode's Output Pin */

@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #ifndef NVCORE_STREAM_H
 #define NVCORE_STREAM_H
 
@@ -153,5 +151,3 @@ private:
 } // nv namespace
 
 #endif // NV_STREAM_H
-
-#endif // __linux__

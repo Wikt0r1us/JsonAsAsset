@@ -21,8 +21,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef __linux__
-
 #ifndef NV_IMAGE_DIRECTDRAWSURFACE_H
 #define NV_IMAGE_DIRECTDRAWSURFACE_H
 
@@ -243,5 +241,3 @@ namespace nv {
 } // nv namespace
 
 #endif // NV_IMAGE_DIRECTDRAWSURFACE_H
-
-#endif // __linux__

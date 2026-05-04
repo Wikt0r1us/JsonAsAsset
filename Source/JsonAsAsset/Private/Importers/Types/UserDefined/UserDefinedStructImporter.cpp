@@ -6,8 +6,6 @@
 
 #include "UserDefinedStructure/UserDefinedStructEditorData.h"
 #include "Kismet2/StructureEditorUtils.h"
-#include "Utilities/JsonUtilities.h"
-#include "Internationalization/Regex.h"
 
 static const FRegexPattern PropertyNameRegexPattern(TEXT(R"((.*)_(\d+)_([0-9A-Z]+))"));
 
@@ -50,14 +48,16 @@ bool IUserDefinedStructImporter::Import() {
     }), UserDefinedStruct);
 
     /* Struct Metadata [Editor Only Data] */
-    CookedStructMetaData = GetContainer()->FindByType(FString("StructCookedMetaData"));
+    CookedStructMetaData = GetExport("StructCookedMetaData", AssetContainer.JsonObjects, true);
     
-    if (CookedStructMetaData && CookedStructMetaData->Has("StructMetaData")) {
-        TArray<FUObjectJsonValueExport> ObjectMetaData = CookedStructMetaData->GetObject("StructMetaData").GetArray("ObjectMetaData");
+    if (CookedStructMetaData.IsValid() && CookedStructMetaData->HasField(TEXT("StructMetaData"))) {
+        TArray<TSharedPtr<FJsonValue>> ObjectMetaData = CookedStructMetaData->GetObjectField(TEXT("StructMetaData"))->GetObjectField(TEXT("ObjectMetaData"))->GetArrayField(TEXT("ObjectMetaData"));
 
-        for (FUObjectJsonValueExport& ObjectMetadataValue : ObjectMetaData) {
-            FString MetadataKey = ObjectMetadataValue.GetString("Key");
-            FString MetadataValue = ObjectMetadataValue.GetString("Value");
+        for (const TSharedPtr<FJsonValue> ObjectMetadataValue : ObjectMetaData) {
+            const TSharedPtr<FJsonObject> ObjectMetadataObject = ObjectMetadataValue->AsObject();
+
+            FString MetadataKey = ObjectMetadataObject->GetStringField(TEXT("Key"));
+            FString MetadataValue = ObjectMetadataObject->GetStringField(TEXT("Value"));
 
             UserDefinedStruct->SetMetaData(FName(*MetadataKey), *MetadataValue);
 
@@ -73,8 +73,8 @@ bool IUserDefinedStructImporter::Import() {
 
     const TArray<TSharedPtr<FJsonValue>> ChildProperties = GetAssetData()->GetArrayField(TEXT("ChildProperties"));
     
-    for (const auto& Property : ChildProperties) {
-        const TSharedPtr<FJsonObject>& PropertyObject = Property->AsObject();
+    for (const TSharedPtr<FJsonValue> Property : ChildProperties) {
+        const TSharedPtr<FJsonObject> PropertyObject = Property->AsObject();
         
         ImportPropertyIntoStruct(UserDefinedStruct, PropertyObject);
     }
@@ -140,17 +140,21 @@ void IUserDefinedStructImporter::ImportPropertyIntoStruct(UUserDefinedStruct* Us
     FStructureEditorUtils::ChangeVariableDefaultValue(UserDefinedStruct, Variable.VarGuid, DefaultValue);
 
     /* Editor Only Data */
-    if (CookedStructMetaData && CookedStructMetaData->Has("StructMetaData")) {
-        TArray<FUObjectJsonValueExport> PropertiesMetaData = CookedStructMetaData->GetObject("StructMetaData").GetArray("PropertiesMetaData");
+    if (CookedStructMetaData.IsValid() && CookedStructMetaData->HasField(TEXT("StructMetaData"))) {
+        TArray<TSharedPtr<FJsonValue>> PropertiesMetaData = CookedStructMetaData->GetObjectField(TEXT("StructMetaData"))->GetArrayField(TEXT("PropertiesMetaData"));
+        
+        for (const TSharedPtr<FJsonValue> Value : PropertiesMetaData) {
+            const TSharedPtr<FJsonObject> PropertiesMetadataJsonObject = Value->AsObject();
 
-        for (const FUObjectJsonValueExport& Value : PropertiesMetaData) {
             /* Find a matching key */
-            if (Value.GetString("Key") == Name) {
-                TArray<FUObjectJsonValueExport> FieldMetaData = Value.GetObject("Value").GetArray("FieldMetaData");
+            if (PropertiesMetadataJsonObject->GetStringField(TEXT("Key")) == Name) {
+                TArray<TSharedPtr<FJsonValue>> FieldMetaData = PropertiesMetadataJsonObject->GetObjectField(TEXT("Value"))->GetArrayField(TEXT("FieldMetaData"));
 
-                for (FUObjectJsonValueExport& FieldValue : FieldMetaData) {
-                    FString MetadataKey = FieldValue.GetString("Key");
-                    FString MetadataValue = FieldValue.GetString("Value");
+                for (const TSharedPtr<FJsonValue> FieldValue : FieldMetaData) {
+                    const TSharedPtr<FJsonObject> FieldObject = FieldValue->AsObject();
+
+                    FString MetadataKey = FieldObject->GetStringField(TEXT("Key"));
+                    FString MetadataValue = FieldObject->GetStringField(TEXT("Value"));
 
                     Property->SetMetaData(FName(*MetadataKey), *MetadataValue);
 

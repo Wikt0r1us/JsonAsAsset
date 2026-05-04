@@ -84,3 +84,5 @@ _[Ss]cripts
 *.sln
 .idea/
 
+Core/
+.gitignore

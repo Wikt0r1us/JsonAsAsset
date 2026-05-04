@@ -1,9 +1,6 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
 //#include <nvmath/Box.h>
-
-#ifndef __linux__
-
 #include <nvimage/ColorBlock.h>
 #include <nvimage/Image.h>
 
@@ -400,5 +397,3 @@ void ColorBlock::sortColors(const Vector3 & axis)
 
 	return bounds.volume();
 }*/
-
-#endif // __linux__

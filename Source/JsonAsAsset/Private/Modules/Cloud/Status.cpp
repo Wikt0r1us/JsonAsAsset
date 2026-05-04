@@ -3,9 +3,11 @@
 #include "JsonAsAsset.h"
 #include "Modules/Cloud/Cloud.h"
 #include "Modules/UI/StyleModule.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
+#if PLATFORM_WINDOWS
 static TWeakPtr<SNotificationItem> CloudNotification;
+#endif
 
 bool Cloud::Status::IsOpened() {
 	return IsProcessRunning("Core.exe");

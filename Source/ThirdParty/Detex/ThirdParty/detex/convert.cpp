@@ -16,8 +16,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __linux__
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -1178,5 +1176,3 @@ bool detexConvertPixelsInPlace(uint8_t * DETEX_RESTRICT source_pixel_buffer, uin
 uint32_t source_pixel_format, uint32_t target_pixel_format) {
 	return detexConvertPixels(source_pixel_buffer, nu_pixels, source_pixel_format, NULL, target_pixel_format);
 }
-
-#endif // __linux__

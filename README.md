@@ -5,9 +5,7 @@
   -->
   
   <a href="https://github.com/JsonAsAsset/JsonAsAsset">
-    <p>
-      <img src="https://github.com/user-attachments/assets/91b216ba-7bb3-4f48-bf96-69c645451d26" alt="Logo" width="200">
-    </p>
+    <img src="https://github.com/user-attachments/assets/91b216ba-7bb3-4f48-bf96-69c645451d26" alt="Logo" width="200" height="200">
   </a>
 
   <h3 align="center">JsonAsAsset</h3>
@@ -26,7 +24,7 @@
 [![GitHub Downloads Total Count (all assets, all releases)](https://img.shields.io/github/downloads/JsonAsAsset/JsonAsAsset/total?style=for-the-badge&label=DOWNLOADS&color=05c1ff)](/../../releases)
 
 [![Discord](https://img.shields.io/badge/Join%20Discord-Collector?color=0363ff&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/xXEw4jc2UT)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Ko--fi?color=ff0de7&logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/tectory)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Ko--fi?color=ff0de7&logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/t4ctor)
 
 [![Unreal Engine 5 Supported)](https://img.shields.io/badge/5.0+-black?logo=unrealengine&style=for-the-badge&labelColor=grey)](#installation)
 [![Unreal Engine 4.27.2 Supported)](https://img.shields.io/badge/4.27.2-black?logo=unrealengine&style=for-the-badge&labelColor=grey)](#installation)
@@ -93,16 +91,12 @@ If an asset type isn't listed below, **it's not currently supported by the plugi
 | 🔴 **Animation** | PoseAsset, Skeleton, SkeletalMeshLODSettings, BlendSpace, BlendSpace1D, AimOffsetBlendSpace, AimOffsetBlendSpace1D |
 | ⚪ **Physics** | PhysicsAsset, PhysicalMaterial |
 | 🟤 **Sequencer** | CameraAnim |
-| ✨ **Effects** | ParticleSystem |
 | 🟩 **Landscape** | LandscapeGrassType, FoliageType_InstancedStaticMesh, FoliageType_Actor |
 
 #### The following asset types add onto a pre-existing asset
 |  | Asset Types |
 |-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
 | **🔴 Animation** | AnimSequence, AnimMontage **(Animation Curves)** |
-
-#### Partial Blueprint Importing
-If the parent class exists, it'll import the components and defaults of the blueprint.
 
 <a name="material-data-prerequisites"></a>
 #### 🟠 Material Data Prerequisites
@@ -115,7 +109,7 @@ See [Unreal Engine Modding Projects](https://github.com/Buckminsterfullerene02/U
 
 <a name="installation"></a>
 ## Installation
-[<img align="left" width="150" src="https://github.com/user-attachments/assets/d8e4f9c9-1268-4aee-ab1a-dabee31b3069?raw=true">](https://fmodel.app)
+[<img align="left" width="150" height="150" src="https://github.com/user-attachments/assets/d8e4f9c9-1268-4aee-ab1a-dabee31b3069?raw=true">](https://fmodel.app)
 
 > [!IMPORTANT]
 > If you haven't already, **install [FModel](https://fmodel.app) and set it up correctly, then proceed with the setup**.
@@ -127,58 +121,21 @@ See [Unreal Engine Modding Projects](https://github.com/Buckminsterfullerene02/U
 
 We strongly recommend using the latest **commit** of JsonAsAsset to ensure compatibility with recent Unreal updates and access to the newest features.
 
-<details>
-  <summary>UE4</summary>
-  <br>
-  
-Some UE4 builds may fail to locate **UnrealBuildTool.exe** due to missing platform path definitions. You can fix this by manually adding a `PlatformPaths` entry to `BaseEngine.ini`.
-
-#### Steps
-
-1. Go to your Unreal Engine install directory:
-   ```
-   UE_[VERSION]/Engine/Config/
-   ```
-2. Open:
-   ```
-   BaseEngine.ini
-   ```
-3. Scroll to the very bottom of the file and add:
-   ```ini
-   [PlatformPaths]
-   UnrealBuildTool=Engine/Binaries/DotNet/UnrealBuildTool.exe
-   ```
-4. Save the file.
-</details>
-
 Follow these steps to install **JsonAsAsset**:
 
-1. **Downloading JsonAsAsset:**   
-   There are two ways you can download JsonAsAsset. You can either stay up-to-date with the latest development changes (recommended if you want the newest features and fixes, but may occasionally require manual fixing), or download stable releases.
-
-   1. **Up-to-date (Git Submodule)**   
-      Open a terminal in your Unreal project root (where your `.uproject` file is located), then run:
-
-      ```sh
-      git submodule add https://github.com/JsonAsAsset/JsonAsAsset.git Plugins/JsonAsAsset
-      git submodule update --init --recursive
-      ```
-
-   2. **Stable Releases (Manual Download)**   
-      Go to the [Releases page](/../../releases) for the plugin.
-      Download the **Source code (zip)**, extract it into your project's `Plugins` folder (create it if it doesn't exist), so the final path looks like:
-
-      ```
-      Project/Plugins/JsonAsAsset/
-      ```
-3. **Compile JsonAsAsset:**   
-   Follow [**this tutorial**](https://dev.epicgames.com/community/learning/tutorials/qz93/unreal-engine-building-plugins) to build the plugin for your Unreal Engine version.
-4. **Launch Your Project:**   
-   Open your Unreal Engine project.
+1. **Visit the Releases Page:**  
+   Go to the [Releases page](/../../releases) for the plugin.
+3. **Download the Appropriate Release:**    
+   Download the release that matches your version of Unreal Engine.  
+   If a matching release isn't available, [**compile the plugin yourself**](https://dev.epicgames.com/community/learning/tutorials/qz93/unreal-engine-building-plugins).
+5. **Extract the Files:**  
+   Extract the downloaded files to your project's `Plugins` folder. If the folder doesn't exist, create it in the root directory of your project.
+7. **Open Your Project**  
+   Launch your Unreal Engine project.
 
 <a name="cloud"></a>
 ### Set up the Cloud ✨
-Make sure Cloud is enabled in Plugin Settings, and set up a Cloud Server. [Click here to get to Cloud releases.](https://github.com/JsonAsAsset/Core/releases)
+Make sure Cloud is enabled in Plugin Settings, and set up a Cloud Server. [Click here to get to Cloud releases.](https://github.com/Tectors/Core/releases)
 
 Once the Cloud is started, JsonAsAsset will fetch almost every referenced asset for you hands-free.
 
@@ -220,10 +177,21 @@ Thanks go to these wonderful people:
   </tr>
 </table>
 
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Ko--fi?color=ff0de7&logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/tectory)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Ko--fi?color=ff0de7&logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/t4ctor)
 
 - Thanks to the people who contributed to [UEAssetToolkit](https://github.com/Buckminsterfullerene02/UEAssetToolkit-Fixes)! They have helped a lot.
-- Also, thanks to the people who contributed to [Advanced Locomotion System V4](https://www.fab.com/listings/ef9651a4-fb55-4866-a2d9-1b38b028f9c7)!
 - Logo uses a font by [Brylark](https://ko-fi.com/brylark), support him at his ko-fi!
 
-#### [Would you like to contribute?](https://github.com/JsonAsAsset/JsonAsAsset/blob/main/Source/README.md#key-information-for-contributors)
+#### [Would you like to contribute?](https://github.com/JsonAsAsset/JsonAsAsset/blob/main/Source/README.md#key-information-for-contributors-)
+
+
+
+
+
+
+
+
+
+
+
+

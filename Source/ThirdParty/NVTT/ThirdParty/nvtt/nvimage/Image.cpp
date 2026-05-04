@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #include <nvimage/Image.h>
 #include <nvcore/Debug.h>
 #include <nvcore/Ptr.h>
@@ -109,5 +107,3 @@ void Image::fill(Color32 c)
 		m_data[i] = c;
 	}
 }
-
-#endif // __linux__

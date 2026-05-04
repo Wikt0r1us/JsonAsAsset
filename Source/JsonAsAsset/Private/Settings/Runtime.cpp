@@ -3,8 +3,7 @@
 #include "Settings/Runtime.h"
 
 #include "Misc/FileHelper.h"
-#include "Engine/EngineUtilities.h"
-#include "Utilities/JsonUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 /* Define Global Struct */
 FJRuntime GJsonAsAssetRuntime;
@@ -17,10 +16,6 @@ bool FJRuntime::IsUE5() const {
 	return MajorVersion == 5;
 }
 
-bool FJRuntime::IsUE4() const {
-	return MajorVersion == 4;
-}
-
 void FJRuntime::Update() {
 	FString AppDataPath = FPlatformMisc::GetEnvironmentVariable(TEXT("APPDATA"));
 	AppDataPath = FPaths::Combine(AppDataPath, TEXT("FModel/AppSettings.json"));
@@ -30,6 +25,4 @@ void FJRuntime::Update() {
 			ExportDirectory.Path = JsonObject->GetStringField(TEXT("PropertiesDirectory")).Replace(TEXT("\\"), TEXT("/"));
 		}
 	}
-
-	GJsonAsAssetRuntime.bEnableToolbarToggling = GetPlugin(GJsonAsAssetInternalName.ToString()) != nullptr;
 }

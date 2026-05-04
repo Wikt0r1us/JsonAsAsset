@@ -2,33 +2,8 @@
 
 #pragma once
 
-#include "Serializers/PropertySerializer.h"
+#include "Utilities/Serializers/PropertyUtilities.h"
 #include "Dom/JsonObject.h"
-
-inline bool ShouldUseOctetStream(
-	const FString& Type,
-	const bool IsVectorDisplacementMap)
-{
-#if PLATFORM_LINUX
-	return false;
-#else
-	
-#if UE4_26_BELOW || UE5_5_BEYOND
-	return true;
-#else
-	
-	if (Type == "TextureLightProfile"
-	 || Type == "TextureCube"
-	 || Type == "VolumeTexture"
-	 || Type == "TextureRenderTarget2D")
-	{
-		return true;
-	}
-	
-	return IsVectorDisplacementMap;
-#endif
-#endif
-}
 
 struct FTextureCreatorUtilities {
 public:
@@ -42,8 +17,6 @@ public:
 	}
 
 	bool UseOctetStream = true;
-
-	bool IsOctetStreamEnabled() const;
 
     template <class T = UObject>
 	bool CreateTexture(UTexture*& OutTexture, TArray<uint8>& Data, const TSharedPtr<FJsonObject>& Properties);

@@ -14,12 +14,8 @@
 #include "Dom/JsonObject.h"
 
 #include "HttpModule.h"
-#include "AssetRegistry/AssetRegistryModule.h"
-#include "Engine/FontFace.h"
 #include "Importers/Constructor/ImportReader.h"
-#include "Importers/Constructor/Graph/SoundGraph.h"
 #include "Interfaces/IHttpResponse.h"
-#include "Modules/Cloud/Cloud.h"
 #include "Settings/Runtime.h"
 #include "Utilities/RemoteUtilities.h"
 
@@ -151,7 +147,6 @@ template bool FAssetUtilities::ConstructAsset<UMaterialFunctionInterface>(const 
 template bool FAssetUtilities::ConstructAsset<USoundNode>(const FString& Path, const FString& RealPath, const FString& Type, TObjectPtr<USoundNode>& OutObject, bool& bSuccess);
 template bool FAssetUtilities::ConstructAsset<UCurveLinearColor>(const FString& Path, const FString& RealPath, const FString& Type, TObjectPtr<UCurveLinearColor>& OutObject, bool& bSuccess);
 template bool FAssetUtilities::ConstructAsset<UTextureLightProfile>(const FString&, const FString&, const FString&, TObjectPtr<UTextureLightProfile>&, bool&);
-template bool FAssetUtilities::ConstructAsset<UFontFace>(const FString&, const FString&, const FString&, TObjectPtr<UFontFace>&, bool&);
 
 /* Importing assets from Cloud */
 template <typename T>
@@ -197,21 +192,6 @@ bool FAssetUtilities::ConstructAsset(const FString& Path, const FString& RealPat
 
 		if (Response->HasField(TEXT("errored"))) {
 			UE_LOG(LogJsonAsAsset, Log, TEXT("Error from response \"%s\""), *Path);
-			return true;
-		}
-
-		if (Type == "SoundWave") {
-			const TSharedPtr<FJsonObject> ObjectResponse = Cloud::Export::GetRaw(Path, {
-				{
-					"save",
-					"true"
-				}
-			});
-					
-			if (ObjectResponse == nullptr) return true;
-					
-			ISoundGraph::OnDownloadSoundWave(ObjectResponse->GetStringField(TEXT("file")), Path, nullptr);
-			
 			return true;
 		}
 
@@ -277,7 +257,18 @@ bool FAssetUtilities::Construct_TypeTexture(const FString& Path, const FString& 
 	}
 	
 	TArray<uint8> Data = TArray<uint8>();
-	bool UseOctetStream = ShouldUseOctetStream(Type, IsVectorDisplacementMap);
+	bool UseOctetStream = Type == "TextureLightProfile"
+	                       || Type == "TextureCube"
+	                       || Type == "VolumeTexture"
+	                       || Type == "TextureRenderTarget2D" || IsVectorDisplacementMap;
+
+#if UE4_26_BELOW
+	UseOctetStream = true;
+#endif
+
+#if UE5_5_BEYOND
+	UseOctetStream = true;
+#endif
 
 	/* ~~~~~~~~~~~~~~~ Download Texture Data ~~~~~~~~~~~~ */
 	if (Type != "TextureRenderTarget2D") {
@@ -324,7 +315,18 @@ bool FAssetUtilities::Fast_Construct_TypeTexture(const TSharedPtr<FJsonObject>& 
 		}
 	}
 	
-	bool UseOctetStream = ShouldUseOctetStream(Type, IsVectorDisplacementMap);
+	bool UseOctetStream = Type == "TextureLightProfile"
+						   || Type == "TextureCube"
+						   || Type == "VolumeTexture"
+						   || Type == "TextureRenderTarget2D" || IsVectorDisplacementMap;
+
+#if UE4_26_BELOW
+	UseOctetStream = true;
+#endif
+
+#if UE5_5_BEYOND
+	UseOctetStream = true;
+#endif
 	
 	FJRedirects::Redirect(PackagePath);
 

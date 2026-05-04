@@ -4,9 +4,10 @@
 
 #include "Settings/JsonAsAssetSettings.h"
 #include "Settings/Runtime.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
-/********* Redirect History ************ */
+/************************************
+ **** Redirect History ************ */
 TMap<FString, TArray<FJRedirectorPoint>> FJRedirects::History;
 
 bool FJRedirector::IsEnabled() const {
@@ -57,7 +58,7 @@ void FJRedirects::Reverse(FString& Path) {
 		return;
 	}
 
-	for (const FJRedirectorPoint& Point : *Points) {
+	for (const FJRedirectorPoint Point : *Points) {
 		Path = Path.Replace(*Point.To, *Point.From);
 	}
 }

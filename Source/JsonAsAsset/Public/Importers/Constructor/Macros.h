@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 #define REGISTER_IMPORTER(ImporterClass, AcceptedTypes, Category) \
 namespace { \

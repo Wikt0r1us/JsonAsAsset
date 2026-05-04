@@ -3,11 +3,9 @@
 #include "Modules/Cloud/Tools/ConvexCollision.h"
 
 #include "Engine/StaticMeshSocket.h"
-#include "Modules/Cloud/Cloud.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 #include "PhysicsEngine/BodySetup.h"
-#include "Utilities/JsonUtilities.h"
 
 void TToolConvexCollision::Execute() {
 	TArray<FAssetData> AssetDataList = GetAssetsInSelectedFolder();
@@ -66,15 +64,11 @@ void TToolConvexCollision::Execute() {
 				GetObjectSerializer()->SetExportForDeserialization(JsonObject, StaticMesh);
 				GetObjectSerializer()->Parent = StaticMesh;
 
-				FUObjectExportContainer* Container = new FUObjectExportContainer(Exports);
-				GetObjectSerializer()->PropertySerializer->ExportsContainer = Container;
-				GetObjectSerializer()->DeserializeExports(Container);
+				GetObjectSerializer()->DeserializeExports(Exports);
 
-				if (GetObjectSerializer()->GetPropertySerializer()->ExportsContainer) {
-					for (const FUObjectExport* UObjectExport : GetObjectSerializer()->GetPropertySerializer()->ExportsContainer->Exports) {
-						if (UStaticMeshSocket* Socket = Cast<UStaticMeshSocket>(UObjectExport->Object)) {
-							StaticMesh->AddSocket(Socket);
-						}
+				for (const FUObjectExport UObjectExport : GetObjectSerializer()->GetPropertySerializer()->ExportsContainer) {
+					if (UStaticMeshSocket* Socket = Cast<UStaticMeshSocket>(UObjectExport.Object)) {
+						StaticMesh->AddSocket(Socket);
 					}
 				}
 

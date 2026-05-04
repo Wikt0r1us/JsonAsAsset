@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #ifndef NV_MATH_VECTOR_H
 #define NV_MATH_VECTOR_H
 
@@ -805,5 +803,3 @@ matrix44 transpose(matrix44);
 } // nv namespace
 
 #endif // NV_MATH_VECTOR_H
-
-#endif // __linux__

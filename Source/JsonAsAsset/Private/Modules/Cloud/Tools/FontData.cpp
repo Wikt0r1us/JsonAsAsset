@@ -3,9 +3,7 @@
 #include "Modules/Cloud/Tools/FontData.h"
 
 #include "Engine/FontFace.h"
-#include "Modules/Cloud/Cloud.h"
-#include "Engine/EngineUtilities.h"
-#include "Utilities/JsonUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 void TToolFontData::Execute() {
 	const FString TargetType = "FontFace";
@@ -58,9 +56,8 @@ void TToolFontData::Execute() {
 				GetObjectSerializer()->ExportsToNotDeserialize.Empty();
 				GetObjectSerializer()->SetExportForDeserialization(JsonObject, FontFace);
 				GetObjectSerializer()->Parent = FontFace;
-
-				FUObjectExportContainer* Container = new FUObjectExportContainer(Exports);
-				GetObjectSerializer()->DeserializeExports(Container);
+				
+				GetObjectSerializer()->DeserializeExports(Exports);
 
 				GetObjectSerializer()->DeserializeObjectProperties(Properties, FontFace);
 				

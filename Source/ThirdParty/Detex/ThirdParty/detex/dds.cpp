@@ -16,8 +16,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __linux__
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -297,4 +295,3 @@ bool detexSaveDDSFile(detexTexture *texture, const char *filename) {
 	return detexSaveDDSFileWithMipmaps(textures, 1, filename);
 }
 
-#endif // __linux__

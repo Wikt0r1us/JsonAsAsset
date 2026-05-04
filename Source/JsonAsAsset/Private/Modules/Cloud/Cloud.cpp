@@ -6,7 +6,7 @@
 #include "GenericPlatform/GenericPlatformHttp.h"
 #include "Settings/JsonAsAssetSettings.h"
 #include "Settings/Runtime.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 #include "Utilities/RemoteUtilities.h"
 
 TSharedPtr<FJsonObject> Cloud::Export::Get(const TMap<FString, FString>& Parameters, const TMap<FString, FString>& Headers) {
@@ -172,7 +172,7 @@ void Cloud::Update(TFunction<void(bool)> OnResponse) {
 		return;
 	}
 
-	Get("/api/metadata", {}, {}, [MutableSettings, OnResponse](const TSharedPtr<FJsonObject>& MetadataResponse) {
+	Get("/api/metadata", {}, {}, [MutableSettings, OnResponse](TSharedPtr<FJsonObject> MetadataResponse) {
 		if (!MetadataResponse.IsValid()) {
 			OnResponse(false);
 			

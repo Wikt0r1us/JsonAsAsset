@@ -7,8 +7,7 @@
 #include "Modules/Log.h"
 #include "Modules/Metadata.h"
 #include "Modules/UI/StyleModule.h"
-#include "Engine/EngineUtilities.h"
-#include "Utilities/JsonUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 FJsonAsAssetVersioning GJsonAsAssetVersioning;
 
@@ -24,10 +23,6 @@ void FJsonAsAssetVersioning::Reset(const int InVersion, const int InLatestVersio
 	HTMLUrl = InHTMLUrl;
 	
 	SetValid(true);
-}
-
-inline int32 ConvertVersionStringToInt(const FString& VersionStr) {
-	return FCString::Atoi(*VersionStr.Replace(TEXT("."), TEXT("")));
 }
 
 void FJsonAsAssetVersioning::Update() {
@@ -65,7 +60,13 @@ void FJsonAsAssetVersioning::Update() {
 			return;
 		}
 		
-		Reset(ConvertVersionStringToInt(FJMetadata::Version), ConvertVersionStringToInt(JsonObject->GetStringField("name")), JsonObject->GetStringField(TEXT("html_url")), JsonObject->GetStringField(TEXT("name")), FJMetadata::Version);
+		const FString VersionName = JsonObject->GetStringField(TEXT("name"));
+		const FString CurrentVersionName = FJMetadata::Version;
+
+		const int LatestVersion = ConvertVersionStringToInt(VersionName);
+		const int CurrentVersion = ConvertVersionStringToInt(FJMetadata::Version);
+
+		Reset(CurrentVersion, LatestVersion, JsonObject->GetStringField(TEXT("html_url")), VersionName, CurrentVersionName);
 
 		static bool IsNotificationShown = false;
 

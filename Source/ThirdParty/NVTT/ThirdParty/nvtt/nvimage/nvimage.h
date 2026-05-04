@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #ifndef NV_IMAGE_H
 #define NV_IMAGE_H
 
@@ -12,5 +10,3 @@
 #define NVIMAGE_CLASS
 
 #endif // NV_IMAGE_H
-
-#endif // __linux__

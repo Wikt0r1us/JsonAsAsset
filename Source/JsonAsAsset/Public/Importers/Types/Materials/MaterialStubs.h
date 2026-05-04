@@ -110,7 +110,7 @@ inline void CreateStubs(IMaterialImporter* MaterialImporter) {
 		&& CachedExpressionData->HasTypedField<EJson::Array>(TEXT("ScalarValues"))
 		) {
 		const TArray<TSharedPtr<FJsonValue>>
-			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries"))->GetArrayField(TEXT("ParameterInfoSet")),
+			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries"))->GetArrayField("ParameterInfoSet"),
 			paramValueIndexesPtr = CachedExpressionData->GetArrayField(TEXT("ScalarPrimitiveDataIndexValues")),
 			paramValuesPtr = CachedExpressionData->GetArrayField(TEXT("ScalarValues"));
 		if (paramsPtr.Num() == paramValueIndexesPtr.Num() && paramsPtr.Num() == paramValuesPtr.Num()) {
@@ -162,7 +162,7 @@ inline void CreateStubs(IMaterialImporter* MaterialImporter) {
 		&& CachedExpressionData->HasTypedField<EJson::Array>(TEXT("VectorValues"))
 		) {
 		const TArray<TSharedPtr<FJsonValue>>
-			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries[1]"))->GetArrayField(TEXT("ParameterInfoSet")),
+			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries[1]"))->GetArrayField("ParameterInfoSet"),
 			paramValueIndexesPtr = CachedExpressionData->GetArrayField(TEXT("VectorPrimitiveDataIndexValues")),
 			paramValuesPtr = CachedExpressionData->GetArrayField(TEXT("VectorValues"));
 		if (paramsPtr.Num() == paramValueIndexesPtr.Num() && paramsPtr.Num() == paramValuesPtr.Num()) {
@@ -237,18 +237,18 @@ inline void CreateStubs(IMaterialImporter* MaterialImporter) {
 					paramObj->TryGetStringField(TEXT("Name"), paramName)
 					&& paramValuesPtr.IsValidIndex(i)
 					&& paramValuesPtr[i]->TryGetObject(textureValueObj)
-					&& textureValueObj->Get()->TryGetStringField(TEXT("AssetPathName"), textureAssetPath)
-					&& textureValueObj->Get()->TryGetStringField(TEXT("SubPathString"), textureSubPath)
+					&& textureValueObj->Get()->TryGetStringField("AssetPathName", textureAssetPath)
+					&& textureValueObj->Get()->TryGetStringField("SubPathString", textureSubPath)
 					) {
 					UMaterialExpressionTextureSampleParameter2D* param = NewObject<UMaterialExpressionTextureSampleParameter2D>(Material);
 					Material->GetExpressionCollection().AddExpression(param);
 					param->ParameterName = FName(paramName);
 					param->MaterialExpressionEditorX = x;
 					param->MaterialExpressionEditorY = y;
-#if ENGINE_MINOR_VERSION <= 5
 					TObjectPtr<UTexture> tex = TSoftObjectPtr<UTexture>(FSoftObjectPath(FName(textureAssetPath), textureSubPath)).LoadSynchronous();
 					param->Texture = tex;
 					param->SamplerType = param->GetSamplerTypeForTexture(tex.Get());
+
 					UMaterialExpressionAdd* newAdd = NewObject<UMaterialExpressionAdd>(Material);
 					Material->GetExpressionCollection().AddExpression(newAdd);
 					newAdd->MaterialExpressionEditorX = x + 16 * 8 * 2;
@@ -260,7 +260,6 @@ inline void CreateStubs(IMaterialImporter* MaterialImporter) {
 						lastAdd->B.Connect(0, newAdd);
 					}
 					lastAdd = newAdd;
-#endif
 				}
 				y += 16*8*2;
 				i++;
@@ -277,7 +276,7 @@ inline void CreateStubs(IMaterialImporter* MaterialImporter) {
 		)
 	{
 		const TArray<TSharedPtr<FJsonValue>>
-			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries[7]"))->GetArrayField(TEXT("ParameterInfoSet")),
+			paramsPtr = CachedExpressionData->GetObjectField(TEXT("RuntimeEntries[7]"))->GetArrayField("ParameterInfoSet"),
 			paramValuesPtr = CachedExpressionData->GetArrayField(TEXT("StaticSwitchValues"));
 		if (paramsPtr.Num() == paramValuesPtr.Num()) {
 			int32 i = 0;

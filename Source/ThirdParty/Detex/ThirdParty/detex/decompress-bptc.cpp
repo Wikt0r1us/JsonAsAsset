@@ -16,8 +16,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __linux__
-
 #include <detex.h>
 #include <bits.h>
 #include <bptc-tables.h>
@@ -623,4 +621,3 @@ uint32_t *colors) {
 	return;
 }
 
-#endif // __linux__

@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #ifndef NV_CORE_DEBUG_H
 #define NV_CORE_DEBUG_H
 
@@ -124,5 +122,3 @@ namespace nv
 } // nv namespace
 
 #endif	// NV_CORE_DEBUG_H
-
-#endif // __linux__

@@ -3,10 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimMontage.h"
 #include "Importers/Constructor/Importer.h"
-#include "Modules/Toolbar/Tools/ToolBase.h"
+#include "Modules/Tools/ToolBase.h"
 #include "Utilities/JsonUtilities.h"
+
+#if ENGINE_UE5
+#include "Animation/AnimData/IAnimationDataController.h"
+#if ENGINE_MINOR_VERSION >= 4
+#include "Animation/AnimData/IAnimationDataModel.h"
+#endif
+#include "AnimDataController.h"
+#endif
 
 inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSelectedAsset, const IImporter* Importer = nullptr) {
 	/* Animation Sequence Base reference, either by using the selected asset in the browser, or through an importer */
@@ -14,7 +21,8 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 
 	if (UseSelectedAsset) {
 		AnimSequenceBase = GetSelectedAsset<UAnimSequenceBase>(true, Container->GetAssetName());
-	} else {
+	}
+	else {
 		if (Container->GetAsset()) {
 			AnimSequenceBase = Cast<UAnimSequenceBase>(Container->GetAsset());
 		}
@@ -37,7 +45,9 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 	if (!AnimSequenceBase) return false;
 
 	/* Empty all Notifies */
-	if (UAnimSequence* CastedAnimSequence = Cast<UAnimSequence>(AnimSequenceBase)) {
+	UAnimSequence* CastedAnimSequence = Cast<UAnimSequence>(AnimSequenceBase);
+
+	if (CastedAnimSequence) {
 		CastedAnimSequence->AuthoredSyncMarkers.Empty();
 		CastedAnimSequence->Notifies.Empty();
 	}
@@ -45,7 +55,7 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 	Container->DeserializeExports(AnimSequenceBase);
 
 	/* Update Sequence Length */
-	if (const auto& Data = Container->GetAssetData(); Data->HasField(TEXT("SequenceLength"))) {
+	if (const auto Data = Container->GetAssetData(); Data->HasField(TEXT("SequenceLength"))) {
 		const float SequenceLength = Data->GetNumberField(TEXT("SequenceLength"));
 
 		SetAnimSequenceLength(AnimSequenceBase, SequenceLength);
@@ -56,6 +66,7 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 		"NumFrames",
 		"TrackToSkeletonMapTable",
 		"SequenceLength",
+		"Skeleton",
 		"SkeletonGuid",
 		"CompressedTrackToSkeletonMapTable",
 		"CompressedDataStructure",
@@ -99,7 +110,7 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 	}
 
 	/* Import the curves */
-	for (const auto& FloatCurveObject : FloatCurves) {
+	for (const TSharedPtr<FJsonValue> FloatCurveObject : FloatCurves) {
 		/* Curve Display Name */
 		FString DisplayName = "";
 		if (FloatCurveObject->AsObject()->HasField(TEXT("Name"))) {
@@ -187,7 +198,7 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 		/* Keys of the track */
 		TArray<TSharedPtr<FJsonValue>> Keys = FloatCurveObject->AsObject()->GetObjectField(TEXT("FloatCurve"))->GetArrayField(TEXT("Keys"));
 
-		for (const auto& JsonKey : Keys) {
+		for (const TSharedPtr<FJsonValue> JsonKey : Keys) {
 			TSharedPtr<FJsonObject> Key = JsonKey->AsObject();
 
 			FRichCurveKey RichKey = ObjectToRichCurveKey(Key);
@@ -225,8 +236,23 @@ inline bool ReadAnimationData(USerializerContainer* Container, const bool UseSel
 #endif
 	}
 
-	UpdateAnimationCaching(AnimSequenceBase);
-	
+#if UE5_2_BEYOND
+	if (ITargetPlatform* RunningPlatform = GetTargetPlatformManagerRef().GetRunningTargetPlatform()) {
+#if UE5_6_BEYOND
+		CastedAnimSequence->CacheDerivedDataForPlatform(RunningPlatform);
+#else
+		CastedAnimSequence->CacheDerivedData(RunningPlatform);
+#endif
+	}
+#else
+	if (CastedAnimSequence) {
+		CastedAnimSequence->RequestSyncAnimRecompression();
+	}
+#endif
+
+#if ENGINE_UE4
+	AnimSequenceBase->MarkRawDataAsModified();
+#endif
 	AnimSequenceBase->Modify();
 	AnimSequenceBase->PostEditChange();
 

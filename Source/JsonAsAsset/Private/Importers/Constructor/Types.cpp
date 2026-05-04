@@ -3,7 +3,7 @@
 #include "Importers/Constructor/Types.h"
 
 #include "Settings/JsonAsAssetSettings.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 /* Define supported template asset class here */
 TMap<FString, TArray<FString>> ImportTypes::Templated = {
@@ -66,20 +66,8 @@ TMap<FString, TArray<FString>> ImportTypes::Templated = {
 			TEXT("SoundConcurrency"),
 			TEXT("SoundClass"),
 			TEXT("SoundMix"),
-			TEXT("SoundSourceBus"),
-			TEXT("DialogueVoice"),
-			TEXT("DialogueWave"),
-			TEXT("SoundModulationParameterVolume"),
-			TEXT("SoundControlBusMix"),
-			TEXT("SoundModulationDestination"),
 			TEXT("SoundModulationPatch"),
 			TEXT("SubmixEffectDynamicsProcessorPreset"),
-			TEXT("SubmixEffectStereoToQuadPreset"),
-			TEXT("SoundModulationGeneratorEnvelopeFollower"),
-			TEXT("SubmixEffectDynamicReverbPreset"),
-			TEXT("SoundSubmix"),
-			TEXT("SoundControlBus"),
-			TEXT("AudioBus"),
 		}
 	},
 	{

@@ -8,7 +8,6 @@
 struct FJsonAsAssetVersioning {
 	/* Constructors ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	FJsonAsAssetVersioning() = default;
-	
 	FJsonAsAssetVersioning(const int Version, const int LatestVersion, const FString& InHTMLUrl, const FString& VersionName, const FString& CurrentVersionName)
 		: Version(Version)
 		, VersionName(VersionName)

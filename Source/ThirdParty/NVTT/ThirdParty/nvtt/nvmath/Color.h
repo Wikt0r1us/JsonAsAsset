@@ -1,7 +1,5 @@
 // This code is in the public domain -- castanyo@yahoo.es
 
-#ifndef __linux__
-
 #ifndef NV_MATH_COLOR_H
 #define NV_MATH_COLOR_H
 
@@ -178,5 +176,3 @@ inline Vector4 toVector4(Color32 c)
 } // nv namespace
 
 #endif // NV_MATH_COLOR_H
-
-#endif // __linux__

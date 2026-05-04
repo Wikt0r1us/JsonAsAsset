@@ -1,5 +1,3 @@
-#ifndef __linux__
-
 #ifndef NV_CORE_H
 #error "Do not include this file directly."
 #endif
@@ -82,5 +80,3 @@ typedef uint32              uint;
 
 #pragma warning(disable : 4675)		// resolved overload was found by argument-dependent lookup
 */
-
-#endif // __linux__

@@ -1,11 +1,10 @@
 ﻿/* Copyright JsonAsAsset Contributors 2024-2026 */
 
 #include "Modules/Cloud/Tools/AnimationData.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 #include "Dom/JsonObject.h"
 #include "Animation/AnimSequence.h"
-#include "Modules/Cloud/Cloud.h"
 
 void TToolAnimationData::Execute() {
 	TArray<FAssetData> AssetDataList = GetAssetsInSelectedFolder();
@@ -52,11 +51,11 @@ void TToolAnimationData::Execute() {
 			if (Name != Asset->GetName()) continue;
 
 			if (Type == "AnimSequence") {
-				FUObjectExportContainer* Container = new FUObjectExportContainer(Exports);
+				FUObjectExportContainer Container = Exports;
 
-				for (FUObjectExport* ExportInContainer : Container->Exports) {
-					if (ExportInContainer->GetClass() == UAnimSequence::StaticClass()) {
-						ExportInContainer->Object = AnimSequence;
+				for (FUObjectExport ExportInContainer : Container) {
+					if (ExportInContainer.GetClass() == UAnimSequence::StaticClass()) {
+						ExportInContainer.Object = AnimSequence;
 						Initialize(ExportInContainer, Container);
 					}
 				}

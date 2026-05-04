@@ -2,8 +2,8 @@
 
 #include "Modules/Toolbar/Toolbar.h"
 
-#include "Engine/Compatibility.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/Compatibility.h"
+#include "Utilities/EngineUtilities.h"
 
 #include "Modules/UI/StyleModule.h"
 #include "Importers/Constructor/ImportReader.h"
@@ -16,9 +16,10 @@
 #include "Modules/Toolbar/Dropdowns/ParentDropdownBuilder.h"
 #include "Modules/Toolbar/Dropdowns/ToolsDropdownBuilder.h"
 #include "Modules/Toolbar/Dropdowns/VersioningDropdownBuilder.h"
-#include "Utilities/DialogUtilities.h"
 
+#if PLATFORM_WINDOWS
 static TWeakPtr<SNotificationItem> WaitingForCloud;
+#endif
 
 void UJsonAsAssetToolbar::Register() {
 #if ENGINE_UE5
@@ -160,70 +161,15 @@ void UJsonAsAssetToolbar::UE4Register(FToolBarBuilder& Builder) {
 		FSlateIcon(FJsonAsAssetStyle::Get().GetStyleSetName(), FName("Toolbar.Icon")),
 		true
 	);
-	
-	UE4CloudRegister(Builder);
 }
 
-void UJsonAsAssetToolbar::UE4CloudRegister(FToolBarBuilder& Builder) {
-	Builder.AddToolBarButton(
-		FUIAction(
-			FExecuteAction::CreateLambda([this] {
-				UJsonAsAssetSettings* Settings = GetSettings();
-						
-				Settings->EnableCloudServer = !Settings->EnableCloudServer;
-				SavePluginSettings(Settings);
-			}),
-			FCanExecuteAction(),
-			FGetActionCheckState(),
-			FIsActionButtonVisible::CreateStatic(&IsToolBarVisible)
-		),
-		NAME_None,
-		TAttribute<FText>::Create([this] {
-			const UJsonAsAssetSettings* Settings = GetSettings();
-			
-			return Settings->EnableCloudServer ? FText::FromString("On") : FText::FromString("Off");
-		}),
-		FText::FromString(""),
-		FSlateIcon(FJsonAsAssetStyle::Get().GetStyleSetName(), FName("Toolbar.Cloud"))
-	);
-
-	Builder.AddComboButton(
-		FUIAction(
-			FExecuteAction(),
-			FCanExecuteAction::CreateLambda([] {
-				return GetSettings()->EnableCloudServer;
-			}),
-			FGetActionCheckState(),
-			FIsActionButtonVisible::CreateStatic(IsToolBarVisible)
-		),
-		FOnGetContent::CreateStatic(&CreateCloudMenuDropdown),
-		FText::FromString(FJMetadata::Version),
-		FText::FromString(""),
-		FSlateIcon(FJsonAsAssetStyle::Get().GetStyleSetName(), FName("Toolbar.Cloud")),
-		true
-	);
-}
 #endif
 
-IConsoleVariable* GJsonAsAssetButtonVisibility = nullptr;
-
 bool UJsonAsAssetToolbar::IsToolBarVisible() {
-	if (!GJsonAsAssetRuntime.bEnableToolbarToggling) {
-		return true;
-	}
-	
 	bool Visible = true;
 
-	static bool bHasCheckedConsoleVariable = false;
-
-	if (!bHasCheckedConsoleVariable) {
-		GJsonAsAssetButtonVisibility = IConsoleManager::Get().FindConsoleVariable(TEXT("Toolbar.Tools.FlippedVisibility"));
-
-		bHasCheckedConsoleVariable = true;
-	}
-
-	if (GJsonAsAssetButtonVisibility) {
-		if (GJsonAsAssetButtonVisibility->GetInt() == 1) {
+	if (static const auto CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("Toolbar.Tools.FlippedVisibility"))) {
+		if (CVar->GetInt() == 1) {
 			Visible = false;
 		}
 	}

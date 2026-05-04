@@ -21,8 +21,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef __linux__
-
 #ifndef NV_IMAGE_PIXELFORMAT_H
 #define NV_IMAGE_PIXELFORMAT_H
 
@@ -82,5 +80,3 @@ namespace nv
 
 
 #endif // NV_IMAGE_PIXELFORMAT_H
-
-#endif // __linux__

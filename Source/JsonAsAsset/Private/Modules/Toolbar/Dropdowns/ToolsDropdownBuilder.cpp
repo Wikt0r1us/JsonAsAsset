@@ -4,16 +4,11 @@
 
 #include "Importers/Constructor/Importer.h"
 #include "Importers/Constructor/ImportReader.h"
-
-#if ENGINE_UE4
 #include "Modules/Toolbar/Dropdowns/CloudToolsDropdownBuilder.h"
-#endif
+#include "Utilities/EngineUtilities.h"
 
-#include "Engine/EngineUtilities.h"
-
-#include "Modules/Toolbar/Tools/ClearImportData.h"
-#include "Modules/Toolbar/Tools/FixUpAssetData.h"
-#include "Utilities/DialogUtilities.h"
+#include "Modules/Tools/ClearImportData.h"
+#include "Modules/Tools/FixUpAssetData.h"
 
 void IToolsDropdownBuilder::Build(FMenuBuilder& MenuBuilder) const {
 	UJsonAsAssetSettings* Settings = GetSettings();
@@ -81,6 +76,18 @@ void IToolsDropdownBuilder::Build(FMenuBuilder& MenuBuilder) const {
 
 				InnerMenuBuilder.EndSection();
 			}
+
+#if ENGINE_UE4
+		if (Settings->EnableCloudServer) {
+			TArray<TSharedRef<IParentDropdownBuilder>> Dropdowns = {
+				MakeShared<ICloudToolsDropdownBuilder>()
+			};
+
+			for (const TSharedRef<IParentDropdownBuilder>& Dropdown : Dropdowns) {
+				Dropdown->Build(InnerMenuBuilder);
+			}
+		}
+#endif
 		}),
 		false,
 		FSlateIcon(FAppStyle::GetAppStyleSetName(), "DeveloperTools.MenuIcon")

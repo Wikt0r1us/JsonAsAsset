@@ -15,7 +15,7 @@ public:
 	virtual bool Import() override;
 
 protected:
-	FUObjectExport* CookedStructMetaData = new FUObjectExport();
+	TSharedPtr<FJsonObject> CookedStructMetaData;
 	TSharedPtr<FJsonObject> DefaultProperties;
 
 	FEdGraphPinType ResolvePropertyPinType(const TSharedPtr<FJsonObject>& PropertyJsonObject);

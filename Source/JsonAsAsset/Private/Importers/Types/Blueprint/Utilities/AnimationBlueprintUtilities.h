@@ -6,8 +6,7 @@
 #include "AnimGraphNode_BlendListByEnum.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
-#include "Serializers/ObjectSerializer.h"
-#include "Utilities/JsonUtilities.h"
+#include "Utilities/Serializers/ObjectUtilities.h"
 
 inline FStructProperty* GetNodeStructProperty(const UAnimGraphNode_Base* Node) {
 	if (!Node) return nullptr;
@@ -153,8 +152,8 @@ inline void HarvestAndTagConnectedStateMachineNodes(const FString& StartKey, con
 	}
 }
 
-inline void HandlePropertyBinding(FUObjectExport* NodeExport, const TArray<TSharedPtr<FJsonValue>>& JsonObjects, UAnimGraphNode_Base* Node, IImporter* Importer, UAnimBlueprint* AnimBlueprint) {
-	const TSharedPtr<FJsonObject> NodeProperties = NodeExport->JsonObject;
+inline void HandlePropertyBinding(FUObjectExport NodeExport, const TArray<TSharedPtr<FJsonValue>>& JsonObjects, UAnimGraphNode_Base* Node, IImporter* Importer, UAnimBlueprint* AnimBlueprint) {
+	const TSharedPtr<FJsonObject> NodeProperties = NodeExport.JsonObject;
 	
 	/* Let the user know that this node has nodes plugged into it */
 	if (NodeProperties->HasField(TEXT("EvaluateGraphExposedInputs"))) {
@@ -166,8 +165,8 @@ inline void HandlePropertyBinding(FUObjectExport* NodeExport, const TArray<TShar
 			const TArray<TSharedPtr<FJsonValue>> CopyRecords = EvaluateGraphExposedInputs->GetArrayField(TEXT("CopyRecords"));
 
 			if (CopyRecords.Num() > 0) {
-				for (const auto& CopyRecordAsValue : CopyRecords) {
-					const TSharedPtr<FJsonObject>& CopyRecordAsObject = CopyRecordAsValue->AsObject();
+				for (const TSharedPtr<FJsonValue> CopyRecordAsValue : CopyRecords) {
+					const TSharedPtr<FJsonObject> CopyRecordAsObject = CopyRecordAsValue->AsObject();
 
 					if (!CopyRecordAsObject->HasField(TEXT("DestProperty"))) continue;
 					if (CopyRecordAsObject->HasField(TEXT("BoundFunction")) && CopyRecordAsObject->GetStringField(TEXT("BoundFunction")) != TEXT("None")) {
@@ -280,7 +279,7 @@ inline void HandlePropertyBinding(FUObjectExport* NodeExport, const TArray<TShar
 				}
 			}
 
-			Node->NodeComment = NodeExport->GetName().ToString();
+			Node->NodeComment = NodeExport.GetName().ToString();
 			Node->bCommentBubbleVisible = bBoundFunction;
 		}
 	}

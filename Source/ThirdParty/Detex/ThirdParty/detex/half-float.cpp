@@ -16,8 +16,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
 
-#ifndef __linux__
-
 #include "half-float.h"
 #include <stdlib.h>
 #include <math.h>
@@ -298,5 +296,3 @@ uint16_t * DETEX_RESTRICT target_buffer) {
 	}
 }
 #endif
-
-#endif // __linux__

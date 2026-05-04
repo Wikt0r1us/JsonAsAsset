@@ -3,7 +3,7 @@
 #include "Modules/Cloud/Tools/SkeletalMeshData.h"
 
 #include "ClothingAssetBase.h"
-#include "Engine/EngineUtilities.h"
+#include "Utilities/EngineUtilities.h"
 
 #include "Dom/JsonObject.h"
 #include "Animation/AnimSequence.h"
@@ -23,8 +23,6 @@
 
 #include "EditorFramework/AssetImportData.h"
 #include "Importers/Constructor/Importer.h"
-#include "Modules/Cloud/Cloud.h"
-#include "Utilities/JsonUtilities.h"
 
 #if ENGINE_UE5
 #include "Animation/AnimData/IAnimationDataController.h"
@@ -161,11 +159,10 @@ void TSkeletalMeshData::Execute() {
 				
 				SkeletalMesh->GetMeshOnlySocketList().Empty();
 
-				FUObjectExportContainer* Container = new FUObjectExportContainer(Exports);
-				GetObjectSerializer()->DeserializeExports(Container);
+				GetObjectSerializer()->DeserializeExports(Exports);
 
-				for (const FUObjectExport* UObjectExport : GetObjectSerializer()->GetPropertySerializer()->ExportsContainer->Exports) {
-					if (USkeletalMeshSocket* Socket = Cast<USkeletalMeshSocket>(UObjectExport->Object)) {
+				for (const FUObjectExport UObjectExport : GetObjectSerializer()->GetPropertySerializer()->ExportsContainer) {
+					if (USkeletalMeshSocket* Socket = Cast<USkeletalMeshSocket>(UObjectExport.Object)) {
 						SkeletalMesh->GetMeshOnlySocketList().Add(Socket);
 					}
 				}

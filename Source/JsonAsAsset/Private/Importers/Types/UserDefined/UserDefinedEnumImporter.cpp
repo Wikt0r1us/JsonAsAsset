@@ -74,12 +74,8 @@ bool IUserDefinedEnumImporter::Import() {
 		FString UniqueKey = ValueObject->GetStringField(TEXT("Key"));
 		FString SourceString = ValueObject->GetStringField(TEXT("SourceString"));
 
-		if (ValueObject->HasField(TEXT("CultureInvariantString"))) {
-			DisplayNames.Add(EnumKey, FText::FromString(*ValueObject->GetStringField(TEXT("CultureInvariantString"))));
-		} else {
-			/* TODO: Add LocalizedString */
-			DisplayNames.Add(EnumKey, FInternationalization::ForUseOnlyByLocMacroAndGraphNodeTextLiterals_CreateText(*SourceString, *TextNamespace, *UniqueKey));
-		}
+		/* TODO: Add LocalizedString */
+		DisplayNames.Add(EnumKey, FInternationalization::ForUseOnlyByLocMacroAndGraphNodeTextLiterals_CreateText(*SourceString, *TextNamespace, *UniqueKey));
 	}
 
 	/* Set Display Names in the UserDefinedEnum */

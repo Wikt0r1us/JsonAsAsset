@@ -18,8 +18,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #pragma once
 
-#ifndef __linux__
-
 extern const uint8_t detex_bptc_table_P2[64 * 16];
 extern const uint8_t detex_bptc_table_P3[64 * 16];
 
@@ -31,4 +29,3 @@ extern const uint16_t detex_bptc_table_aWeight2[4];
 extern const uint16_t detex_bptc_table_aWeight3[8];
 extern const uint16_t detex_bptc_table_aWeight4[16];
 
-#endif // __linux__

@@ -7,7 +7,7 @@
 
 /* Handles everything needed to create a sound graph from JSON. */
 class ISoundGraph : public IImporter {
-public:
+protected:
 	/* Graph Functions */
 	static void ConnectEdGraphNode(UEdGraphNode* NodeToConnect, UEdGraphNode* NodeToConnectTo, int Pin);
 	static void ConnectSoundNode(const USoundNode* NodeToConnect, const USoundNode* NodeToConnectTo, int Pin);
@@ -16,8 +16,8 @@ public:
 	static USoundNode* CreateEmptyNode(FName Name, FName Type, USoundCue* SoundCue);
 
 	void ConstructNodes(USoundCue* SoundCue, TMap<FString, USoundNode*>& OutNodes);
-	void SetupNodes(const USoundCue* SoundCueAsset, TMap<FString, USoundNode*> SoundCueNodes);
+	void SetupNodes(USoundCue* SoundCueAsset, TMap<FString, USoundNode*> SoundCueNodes) const;
 
 	/* Sound Wave Import */
-	static void OnDownloadSoundWave(const FString& SavePath, FString AssetPtr, USoundNodeWavePlayer* Node);
+	static void OnDownloadSoundWave(FString SavePath, FString AssetPtr, USoundNodeWavePlayer* Node);
 };

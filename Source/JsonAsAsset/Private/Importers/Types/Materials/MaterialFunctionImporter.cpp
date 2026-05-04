@@ -25,14 +25,15 @@ bool IMaterialFunctionImporter::Import() {
 	if (!OnAssetCreation(MaterialFunction)) return false;
 
 	/* Define editor only data from the JSON */
-	FUObjectExportContainer* ExpressionContainer = new FUObjectExportContainer();
+	FUObjectExportContainer ExpressionContainer;
+
 	const TSharedPtr<FJsonObject> Props = FindMaterialData(GetAssetType(), ExpressionContainer);
 
 	/* Map out each expression for easier access */
 	ConstructExpressions(ExpressionContainer);
 
 	/* If Missing Material Data */
-	if (ExpressionContainer->Num() == 0) {
+	if (ExpressionContainer.Num() == 0) {
 		SpawnMaterialDataMissingNotification();
 
 		return false;
